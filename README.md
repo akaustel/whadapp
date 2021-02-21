@@ -1,6 +1,6 @@
 # Wha'Dapp
 
-A simplistic example app for building ditributed applications using `Wish` peer-to-peer identity-based communication, `node.js` and `Angular`. 
+A simplistic example app for building distributed applications using `Wish` peer-to-peer identity-based communication, `node.js` and `Angular`. 
 
 # Setup
 
