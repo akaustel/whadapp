@@ -1,0 +1,24 @@
+<div *ngIf="(state | async) === 'init'" class="wrapper">
+	Starting up...
+</div>
+<div *ngIf="(state | async) === 'setup'" class="wrapper"	>
+	<app-create-identity></app-create-identity>
+</div>
+<div *ngIf="(state | async) === 'ready'" class="wrapper">
+	<header class="header-wrapper">
+		<div class="header-logo"><a routerLink="/chat" routerLinkActive="active">💬</a></div>
+		<div class="header-title mat-heading"></div>
+		<nav>
+			<a routerLink="/chat" routerLinkActive="active">🖋</a>
+			<a routerLink="/debug" routerLinkActive="active">⚙️</a>
+		</nav>
+	</header>
+	<main class="main-wrapper">
+		<section class="content-wrapper">
+			<div class="content">
+				<router-outlet></router-outlet>
+			</div>
+		</section>
+	</main>
+</div>
+

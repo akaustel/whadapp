@@ -1,0 +1,94 @@
+<div class="mat-body">
+
+  <mat-tab-group>
+    <mat-tab label="Find">
+      <div>
+        <h4 style="font-family: Roboto, sans-serif;">Near by</h4>
+        <div *ngFor="let node of discovered" class="mat-caption">
+          <button mat-button (click)="friendRequest(node)">
+            <mat-icon style="vertical-align: middle; margin-top: -3px;">wifi_tethering</mat-icon>
+            Befriend {{ node.alias }}
+          </button>
+        </div>
+        <div *ngIf="!discovered?.length">
+          None are near by. Finds other's in your local network that are discoverable.
+        </div>
+      </div>
+      
+      <div>
+        <h4 style="font-family: Roboto, sans-serif;">Search</h4>
+        <mat-form-field>
+          <input matInput placeholder="Who are you looking for?" [formControl]="search" (keydown.enter)="find(search.value)">
+          <button (click)="find(search.value)" matSuffix mat-button mat-icon-button>
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <div *ngFor="let contact of directory" class="mat-caption">
+          <button mat-button (click)="directoryFriendRequest(contact)">Befriend {{ contact.alias }}</button>
+          <button (click)="unpublish(contact._id)" mat-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <h4 style="font-family: Roboto, sans-serif;">Publish</h4>
+        <div class="text-muted">This feature is experimental</div>
+        <div *ngIf="ownDirectoryEntry">
+          <button mat-button (click)="unpublish(ownDirectoryEntry._id)">
+            <mat-icon style="vertical-align: middle; margin-top: -3px;">person_remove</mat-icon>
+            Remove {{ (identity | async).alias }} from directory
+          </button>
+        </div>
+        <div *ngIf="!ownDirectoryEntry">
+          <button mat-button (click)="publish(identity.value?.uid)">
+            <mat-icon style="vertical-align: middle; margin-top: -3px;">published_with_changes</mat-icon>
+            Publish {{ (identity | async).alias }} to directory
+          </button>
+        </div>
+      </div>
+    </mat-tab>>
+    <mat-tab label="People">
+      <div *ngFor="let identity of (identities | async)" class="mat-caption">
+        {{ identity.alias }}
+        ({{ identity.privkey ? 'Identity' : 'Contact' }})
+        <button mat-button (click)="identityRemove(identity.uid)">Remove</button>
+      </div>
+
+    </mat-tab>
+    <mat-tab *ngIf="friendRequests?.length">
+      <ng-template mat-tab-label>
+        <span matBadge="{{ friendRequests?.length }}" matBadgeOverlap="false" matBadgeColor="accent">Requests</span>
+      </ng-template>
+
+      <div>
+        <div *ngIf="!friendRequests?.length">None</div>
+        <div *ngFor="let request of friendRequests" class="mat-caption">
+          Friend request from {{ request.alias }}
+          <button mat-button (click)="friendRequestAccept(request.luid, request.ruid)">Accept</button>
+          <button mat-button (click)="friendRequestDecline(request.luid, request.ruid)">Decline</button>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Peers">
+      <div>
+        <span *ngFor="let peer of peers" (click)="navigateToProfile(peer.ruid)" class="mat-caption peer">
+          <span matTooltip="{{ peer.protocol }}">
+            {{ wish.identity(peer.ruid).alias }}
+          </span>
+        </span>
+      </div>  
+    </mat-tab>
+    <mat-tab label="Connections">
+      <div *ngFor="let connection of connections" class="mat-caption">
+        {{ wish.identity(connection.luid).alias }} >
+        {{ wish.identity(connection.ruid).alias }}
+        {{ connection.outgoing ? 'Outbound' :'Inbound' }}
+        <button mat-button (click)="disconnect(connection.cid)">disconnect</button>
+      </div>  
+    </mat-tab>
+  </mat-tab-group>
+</div>

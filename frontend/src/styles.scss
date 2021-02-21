@@ -1,0 +1,168 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/theming';
+@include mat-core();
+
+$mat-primary-scheme: (
+  100: #c5cae9,
+  500: #49a2c4,
+  700: #303f9f,
+  contrast: (
+    100: rgba(0,0,0,0.87),
+    500: #ffffff,
+    700: #ffffff,
+  )
+);
+$mat-accent-scheme: (
+  100: #ff80ab,
+  500: #b6e763,
+  700: #f50057,
+  contrast: (
+    100: rgba(0,0,0,0.87),
+    500: rgba(0,0,0,0.87),
+    700: #ffffff,
+  )
+);
+$mat-primary-palette: mat-palette($mat-primary-scheme);
+$mat-accent-palette: mat-palette($mat-accent-scheme);
+
+$app-light-theme: mat-light-theme($mat-primary-palette, $mat-accent-palette);
+
+@include angular-material-theme($app-light-theme);
+
+// following section is for dark mode.
+// use appropriate class name for darkMode
+$app-dark-theme: mat-dark-theme($mat-primary-palette, $mat-accent-palette);
+.darkMode {
+  @include angular-material-theme($app-dark-theme);
+}
+    
+
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
+
+@import url('https://fonts.googleapis.com/css2?family=Forum&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Forum', cursive;
+    font-family: 'Vollkorn', serif;
+}
+
+html {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body, .wrapper {
+  width: 100vw;
+  height: 100%;
+	margin: 0;
+}
+
+.wrapper {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+}
+
+.header-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  
+  background-color: #424242;
+  color: rgb(197, 197, 197);
+  height: 48px;
+}
+
+.header-wrapper > * {
+  padding: 0.3rem;
+}
+
+.header-title {
+  flex: 1;
+  font-size: 2rem;
+}
+
+.header-search {
+  opacity: .7;
+}
+
+.main-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden; 
+}
+
+.main-wrapper >* {
+  display: flex;
+  flex: 1;
+}
+
+.panel-wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f0;
+  width: 20rem;
+  height: 100%;
+}
+
+.panel-wrapper-empty {
+  display: none;
+}  
+
+.content-wrapper {
+  display: flex;
+  flex: 10 1 auto;
+  overflow: auto;
+  flex-direction: column;
+  position: relative;
+  width: 100vw;
+}
+
+.content-nav {
+  display: flex;
+}
+
+.content-nav > * {
+  padding: .4rem;
+}
+.content {
+  /* padding: .4rem; */
+	overflow: auto;
+  display: flex;
+  flex: 1;
+  min-height: min-content;
+}
+
+.footer-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: #72a0da;
+  color: white;
+}
+
+.footer-wrapper > * {
+  padding: 1rem;
+}
+
+.footer-left>a, 
+.footer-right>a {
+  color: white;
+}
+
+nav > a {
+  text-decoration: none;
+}
+
+.mat-tab-body-content {
+  padding: 1em;
+}

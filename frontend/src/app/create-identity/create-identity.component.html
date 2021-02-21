@@ -1,0 +1,38 @@
+<div style="width: 100%; height: 100%;" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    <div style="width: 100%; height: 100%; display: grid; grid-template-rows: auto 300px auto; grid-template-columns: auto 400px auto;">
+        <div style="grid-row-start: 2; grid-column-start: 2; place-self: center;">
+            <div style="width: 400px; height: 300px;">
+                <div style="text-align: center; font-size: 22px; font-family: 'Forum', cursive;">
+                    What should you be called?
+                </div>
+                <mat-form-field style="width: 100%">
+                    <input
+                    matInput
+                    cdkFocusInitial
+                    placeholder="Alias"
+                    [formControl]="alias"
+                    style="text-align: center;"
+                    (keydown.enter)="create(alias.value)">
+                </mat-form-field>
+                <div *ngIf="alias.invalid && (alias.dirty || alias.touched)" class="alert alert-danger">
+
+                <div *ngIf="alias.errors.required">
+                    Alias is required.
+                </div>
+                <div *ngIf="alias.errors.minlength">
+                    Alias must be at least 1 characters long.
+                </div>
+                <div *ngIf="alias.errors.maxlength">
+                    Alias must be at most 32 characters long.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+</div>
+</div>

@@ -1,0 +1,32 @@
+
+:host {
+    width: 100%;
+    height: 100%;
+}
+
+.grid {
+    width: 100vw;
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 60px;
+    grid-template-columns: auto;
+}
+
+.grid > * {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 0px;
+    margin: 5px;
+    overflow: auto;
+}
+
+.user {
+    color: #789631;
+    border: 1px solid #739631;
+    border-radius: 4px;
+    background-color: #f0ffd4;
+    padding: 2px 7px 1px 6px;
+    margin: 1px;
+    font-size: 0.7rem;
+}
+

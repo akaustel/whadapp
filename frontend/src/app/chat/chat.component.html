@@ -1,0 +1,17 @@
+<div class="grid">
+    <div>
+        <div class="messages">
+            <div *ngFor="let message of (reason.messages | async)" class="mat-caption">
+                <span class="mat-caption user">{{ reason.identity(message.from).alias }}</span>
+                {{message.content}}
+                ({{message.time | timeago}})
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <mat-form-field class="message">
+            <input matInput placeholder="What up?" [formControl]="message" (keydown.enter)="send()">
+        </mat-form-field>
+    </div>
+</div>

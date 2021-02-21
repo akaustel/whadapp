@@ -1,0 +1,26 @@
+
+:host {
+    width: 100%;
+}
+
+.peer {
+    color: #967d31;
+    border: 1px solid #967d31;
+    border-radius: 4px;
+    background-color: #fff4d4;
+    padding: 2px 7px 1px 6px;
+    margin: 1px;
+    font-size: 0.7rem;
+}
+
+.mat-tab-body-content {
+    margin: 10px !important
+}
+
+.text-muted {
+    color: #7c7c7c;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
