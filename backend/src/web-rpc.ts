@@ -4,6 +4,7 @@ import { Server } from '@wishcore/wish-rpc';
 import { Peer, RpcApp } from '@wishcore/wish-sdk';
 import { Directory } from './directory';
 import { Message } from './interfaces';
+import { createHash } from 'crypto';
 
 export class WebRpc {
     rpc: Server;
@@ -11,10 +12,10 @@ export class WebRpc {
     docDb: Collection;
     currentDb: Collection;
 
-    constructor(reason: Application) {
-        this.rpc = reason.webRpcServer;
-        this.app = reason.app;
-        this.docDb = reason.db.jb.collection('chat');
+    constructor(application: Application) {
+        this.rpc = application.webRpcServer;
+        this.app = application.app;
+        this.docDb = application.db.jb.collection('chat');
 
         this.rpc.insertMethods({
             _signals: {},
@@ -37,7 +38,7 @@ export class WebRpc {
                 });
             },
             _send: {},
-            send: (req, res, context) => {
+            send: async (req, res, context) => {
                 const msg: Message = req.args[0];
 
                 const dbMessage = {
@@ -45,10 +46,18 @@ export class WebRpc {
                     time: Date.now()
                 };
 
+                const identities = await this.app.wish.requestAsync('identity.list', []);
+
+                const identity = identities[0];
+
+                const hash = createHash('sha256').update(msg.content).digest();
+
+                const signature = await this.app.wish.requestAsync('identity.sign', [identity.uid, { data: hash }]);
+
                 this.docDb.insertOne(dbMessage);
 
                 Object.values(this.app.clients).forEach(async client => {
-                    client.request('send', [msg.content], () => {});
+                    client.request('send', [msg.content, signature], () => {});
                 });
             },
             _list: {},
