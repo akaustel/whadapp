@@ -10,7 +10,8 @@ const { BSON } = bson();
 })
 export class RpcService {
   client: Client;
-  port = '8080'; // '' + (parseInt(window.location.port, 10) - 4200 + 8080);
+  // port = '8080';
+  port = '' + (parseInt(window.location.port, 10) - 4200 + 8080);
   host = 'ws://' + window.location.hostname + ':' + this.port;
   socket: WebSocket;
   readyCb = [];

@@ -3,3 +3,7 @@
 /backend/env/wish_id_db.bson
 /backend/env/wish.conf
 /backend/dist
+/backend/a/wish_id_db.bson
+/backend/a/wish.conf
+/backend/b/wish_id_db.bson
+/backend/b/wish.conf
