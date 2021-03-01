@@ -22,11 +22,11 @@ npm run develop
 Open a new terminal and go to the frontend folder.
 
 ```sh
-ng serve --port 8080
+npm run port-4200
 ```
 
 Open a third terminal to frontend folder
 
 ```sh
-ng serve --port 8081
+npm run port-4201
 ```
