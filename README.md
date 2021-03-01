@@ -8,3 +8,25 @@ A simplistic example app for building distributed applications using `Wish` peer
 * [Setup backend](backend/README.md)
 * [Setup frontend](frontend/README.md)
 
+
+# Developing
+
+To develop we usually need to tun multiple instances locally. This can be done in the following way.
+
+Open terminal and go to backend folder.
+
+```sh
+npm run develop
+```
+
+Open a new terminal and go to the frontend folder.
+
+```sh
+ng serve --port 8080
+```
+
+Open a third terminal to frontend folder
+
+```sh
+ng serve --port 8081
+```

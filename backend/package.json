@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "nodemon run.ts",
+    "develop": "nodemon dev.ts",
     "test": "mocha --exit -r ts-node/register test/**/*.spec.ts",
     "test-only": "mocha --exit -r ts-node/register",
     "coverage": "nyc mocha --exit -r ts-node/register -r source-map-support/register test/**/*.spec.ts"
