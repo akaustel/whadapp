@@ -1,5 +1,6 @@
 import { Client } from '@wishcore/wish-rpc';
 import { Peer, RpcApp, WishCoreRunner, WishCoreRunnerOpts } from '@wishcore/wish-sdk';
+import { createHash } from 'crypto';
 import { RequestOptions } from 'http';
 import { request } from 'https';
 import { Directory } from '../src/directory';
@@ -16,26 +17,12 @@ const opts: WishCoreRunnerOpts = {
     console.log('up and running...');
 
     const cathy = new ChattyCathy();
-
-    const chat = async () => {
-        const clients = Object.values(cathy.app.clients);
-
-        if (!clients.length) {
-            // don't speak unless someone is listening..
-            return setTimeout(chat, 4000 + Math.random() * 20000);
-        }
-
-        const msg = await getQuote();
-
-        for (const client of Object.values(cathy.app.clients)) {
-            client.requestAsync('send', [msg]);
-        }
-
-        setTimeout(chat, 4000 + Math.random() * 20000);
-    };
-
-    setTimeout(chat, 2000);
 })();
+
+// In case there are some unhandled rejections this makes it easier to debug.
+process.on('unhandledRejection', (reason, p) => {
+    console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});
 
 class ChattyCathy {
     app: RpcApp;
@@ -67,10 +54,49 @@ class ChattyCathy {
             _send: {},
             send: (req, res, context) => {
                 console.log('Got a message:', req.args[0]);
+
+                const message = req.args[0];
+                if (typeof message !== 'string') {
+                    return;
+                }
+
+                if (message.toLocaleLowerCase().includes('cathy')) {
+                    this.sayWiseThings();
+                }
             }
         });
 
         this.acceptFriendRequests();
+    }
+
+    private async sayWiseThings() {
+        const clients = Object.values(this.app.clients);
+
+        if (!clients.length) {
+            // don't speak unless someone is listening..
+            return; // setTimeout(chat, 4000 + Math.random() * 20000);
+        }
+
+        const msg = await getQuote();
+
+        const hash = createHash('sha256').update(msg).digest();
+
+        const identity = (await this.app.wish.requestAsync('identity.list', []))[0];
+
+        if (!identity) {
+            // can't say anything unless I have an Identity to use.
+            return;
+        }
+
+        const signature = await this.app.wish.requestAsync('identity.sign', [identity.uid, { data: hash }]);
+
+        for (const client of Object.values(this.app.clients)) {
+            try {
+                client.requestAsync('send', [msg, signature]);
+            } catch (error) {
+                console.log('An error:', error);
+            }
+        }
     }
 
     private async acceptFriendRequests() {
@@ -112,7 +138,7 @@ class ChattyCathy {
     }
 }
 
-async function getQuote() {
+async function getQuote(): Promise<string> {
     return new Promise(resolve => {
         const options: RequestOptions = {
             method: 'GET',

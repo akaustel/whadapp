@@ -13,7 +13,7 @@
     "@types/mongodb": "3.3.16",
     "@wishcore/reason-cli": "1.0.0-beta1",
     "@wishcore/wish-rpc": "0.6.10",
-    "@wishcore/wish-sdk": "0.4.0-beta-13",
+    "@wishcore/wish-sdk": "0.4.0-beta-14",
     "automerge": "0.14.0",
     "bson-buffer": "1.0.2",
     "connect-multiparty": "2.2.0",
