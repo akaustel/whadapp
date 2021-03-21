@@ -84,72 +84,11 @@ export function btoh(buffer) {
         .join('');
 }
 
-export type LicenseName = string;
+export function mimeFromFile({ type, name }: { type: string, name: string }) {
+    if (name.endsWith('.mkv')) {
+        return 'video/x-matroska';
+    }
 
-export interface License {
-    [license: string]: string;
+    return type;
 }
 
-export interface Share {
-    public?: License;
-    groups?: { [key: string]: License };
-    users?: { [key: string]: License };
-}
-
-export interface Document {
-    parent?: Buffer;
-    uid?: Buffer;
-    time: number;
-    type: string;
-    content: string | Buffer | object;
-    share?: Share;
-    opts?: {
-        license: string;
-        tags: [];
-    };
-    data?: Buffer;
-    hash?: Buffer;
-    signed?: {
-        data: Buffer;
-        signatures: {
-            algo: string;
-            uid: Buffer;
-            sign: Buffer;
-            claim?: Buffer;
-        }
-    };
-}
-
-export interface DbDocument {
-    parent?: string;
-    uid?: string;
-    time: number;
-    type: string;
-    content: string | Buffer | object;
-    search?: string[];
-    share?: {
-        public?: License;
-        groups?: {
-            [key: string]: License
-        };
-        users?: {
-            [key: string]: License;
-        };
-    };
-    opts?: {
-        license: string;
-        tags: [];
-    };
-    data?: Buffer;
-    hash?: string;
-    signed?: {
-        data: Buffer;
-        signatures: {
-            algo: string;
-            uid: Buffer;
-            sign: Buffer;
-            claim?: Buffer;
-        }
-    };
-
-}
