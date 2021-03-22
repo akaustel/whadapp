@@ -4,7 +4,7 @@ import { WishRpcService } from './wish/wish-rpc.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { addMessage, Message, reset, setMessages } from 'src/reducers/message.actions';
-import { btoh } from './util';
+import { btoh, stripEmptyKeys } from './util';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +13,9 @@ export class ReasonService {
     peers = new BehaviorSubject<any[]>([]);
     messages: Observable<Message[]>;
     identities;
+
+    port = '' + (parseInt(window.location.port, 10) - 4200 + 8080);
+    url = 'http://' + window.location.hostname + ':' + this.port;
 
     constructor(
         private rpc: RpcService,
@@ -38,10 +41,12 @@ export class ReasonService {
                     this.peersList();
                 }
                 if (type === 'message') {
+                    const msg: Message = data[1];
                     const context = data[2];
                     const peer = context.peer;
+                    const message = { content: msg.content, files: msg.files, from: btoh(peer.ruid), time: Date.now() };
 
-                    this.store.dispatch(addMessage({ message: { content: data[1], from: btoh(peer.ruid), time: Date.now() } }));
+                    this.store.dispatch(addMessage({ message }));
                 }
             });
         });
@@ -56,12 +61,13 @@ export class ReasonService {
         return this.wish.identity(uid);
     }
 
-    async broadcast(content: string) {
-        const message: Message = {
+    async broadcast(content: string, file?: string) {
+        const message: Message = stripEmptyKeys<Message>({
             content,
+            files: file ? [file] : undefined,
             from: btoh(this.wish.selectedIdentity),
             time: Date.now(),
-        };
+        });
 
         this.store.dispatch(addMessage({ message }));
         await this.rpc.requestAsync('send', [message]);
@@ -74,5 +80,13 @@ export class ReasonService {
     /** Clear all messages from store */
     reset() {
         this.store.dispatch(reset());
+    }
+
+    imgSrc(hash: Uint8Array | string, opts?: { size: string }) {
+        if (hash instanceof Uint8Array) {
+            hash = btoh(hash);
+        }
+
+        return this.url  + '/image/' + hash + (opts && opts.size ? opts.size : '');
     }
 }

@@ -43,6 +43,8 @@ export class Database {
 
         instance.documentsDb = instance.jb.collection('documents');
 
+        instance.filesDb = instance.jb.collection('file');
+
         return instance;
     }
 

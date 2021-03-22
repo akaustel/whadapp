@@ -3,6 +3,8 @@ import { createAction, props } from '@ngrx/store';
 export interface Message {
     /** Message body text */
     content: string;
+    /** File attachments */
+    files?: string[];
     /** Wish User Id in hex format */
     from: string;
     /** Javascript timestamp */

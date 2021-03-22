@@ -57,7 +57,7 @@ export class WebRpc {
                 this.docDb.insertOne(dbMessage);
 
                 Object.values(this.app.clients).forEach(async client => {
-                    client.request('send', [msg.content, signature], () => {});
+                    client.request('send', [msg, signature], () => {});
                 });
             },
             _list: {},

@@ -37,6 +37,7 @@ interface DbFile {
 
 export class WebHttp {
     http: any;
+    name: string;
 
     constructor(
         private application: Application,
@@ -46,6 +47,8 @@ export class WebHttp {
         const app: express.Application = express();
 
         this.http = app.listen(port);
+
+        this.name = application.opts.name || 'whadapp';
 
         app.use(cors());
 
@@ -71,14 +74,9 @@ export class WebHttp {
             readStream.pipe(hash).on('data', (hashBin: Buffer) => {
                 const hash = hashBin.toString('hex');
 
-                try {
-                    mkdirSync('./files');
-                } catch (e) {}
-                try {
-                    mkdirSync('./files/' + hash.substr(0, 2));
-                } catch (e) {}
+                this.ensureFilePathExists(hash);
 
-                renameSync(files.file.path, WebHttp.pathFromHash(hash));
+                renameSync(files.file.path, this.pathFromHash(hash));
 
                 const type = mimeFromFile(files.file);
 
@@ -104,10 +102,12 @@ export class WebHttp {
             const { width, height, fit } = sizes[sizeId];
 
             const cacheId = width + 'x' + height + '-' + fit;
-            const cacheFile = WebHttp.cachePathFromHash(hash, cacheId);
+            const cacheFile = this.cachePathFromHash(hash, cacheId);
             const cacheFileType = 'image/jpeg';
             const cacheReadStream = await this.imageCacheReadStream(hash, cacheFile);
 
+            /*
+            // This is broken when getting file from remote host
             if (cacheReadStream) {
                 cacheReadStream.on('error', error => {
                     return res.status(403).json({ msg: 'Fail', code: 13, debug: error });
@@ -117,17 +117,25 @@ export class WebHttp {
 
                 return cacheReadStream.pipe(res);
             }
+            */
 
             try {
-                mkdirSync('/tmp/whadapp');
+                mkdirSync('/tmp/' + this.name);
             } catch (error) {}
             try {
-                mkdirSync('/tmp/whadapp/' + hash.substr(0, 2));
+                mkdirSync('/tmp/' + this.name + '/' + hash.substr(0, 2));
             } catch (error) {}
 
             const resize = sharp().resize(width, height, { fit }).jpeg();
 
-            const resized = createReadStream(WebHttp.pathFromHash(hash))
+            resize.on('error', async (error) => {
+                console.log('going here', await this.application.db.filesDb.findOne({ hash }));
+                console.log('Error resizing', error);
+                // res.status(403).send('Error resizing image');
+                // res.send('Error resizing image');
+            });
+
+            const resized = createReadStream(this.pathFromHash(hash))
                 .on('error', error => {
                     return res.status(403).json({ msg: 'Fail', code: 12, debug: error });
                 })
@@ -143,7 +151,7 @@ export class WebHttp {
             const hash = req.params.hash;
             const range = req.headers.range;
 
-            const path = WebHttp.pathFromHash(hash);
+            const path = this.pathFromHash(hash);
 
             let stat: Stats;
 
@@ -199,12 +207,21 @@ export class WebHttp {
         });
     }
 
-    static pathFromHash(hash: string) {
-        return './files/' + hash.substr(0, 2) + '/' + hash + '.bin';
+    pathFromHash(hash: string) {
+        return './' + this.name + '/files/' + hash.substr(0, 2) + '/' + hash + '.bin';
     }
 
-    static cachePathFromHash(hash: string, id: string) {
-        return '/tmp/whadapp/' + hash.substr(0, 2) + '/' + hash + '-' + id + '.bin';
+    cachePathFromHash(hash: string, id: string) {
+        return '/tmp/' + this.name + '/' + hash.substr(0, 2) + '/' + hash + '-' + id + '.bin';
+    }
+
+    ensureFilePathExists(hash: string) {
+        try {
+            mkdirSync('./' + this.name + '/files');
+        } catch (e) {}
+        try {
+            mkdirSync('./' + this.name + '/files/' + hash.substr(0, 2));
+        } catch (e) {}
     }
 
     async imageCacheReadStream(hash: string, file: string) {

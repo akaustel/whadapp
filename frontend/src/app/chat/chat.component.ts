@@ -11,6 +11,7 @@ const defaultMessage = '';
 })
 export class ChatComponent {
   message = new FormControl(defaultMessage);
+  attachment: string;
 
   constructor(
     public reason: ReasonService
@@ -23,7 +24,11 @@ export class ChatComponent {
       return;
     }
 
-    this.reason.broadcast(message);
+    this.reason.broadcast(message, this.attachment);
     this.message.reset(defaultMessage);
+  }
+
+  setAttachment(hash: string) {
+    this.attachment = hash;
   }
 }

@@ -5,11 +5,18 @@
                 <span class="mat-caption user">{{ reason.identity(message.from).alias }}</span>
                 {{message.content}}
                 ({{message.time | timeago}})
+                <div *ngIf="message.files && message.files.length">
+                    <img
+                      *ngIf="message.files[message.files.length - 1]"
+                      src="{{ reason.imgSrc(message.files[message.files.length - 1]) }}"
+                      style="object-fit: cover; width: 75px; height: 75px; border: 1px solid grey; border-radius: 5px;">
+                  </div>
             </div>
         </div>
     </div>
 
     <div>
+        <app-image-upload (fileChange)="setAttachment($event)" style="float: right;"></app-image-upload>
         <mat-form-field class="message">
             <input matInput placeholder="What up?" [formControl]="message" (keydown.enter)="send()">
         </mat-form-field>

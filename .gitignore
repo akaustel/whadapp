@@ -3,7 +3,11 @@
 /backend/env/wish_id_db.bson
 /backend/env/wish.conf
 /backend/dist
-/backend/a/wish_id_db.bson
-/backend/a/wish.conf
-/backend/b/wish_id_db.bson
-/backend/b/wish.conf
+/backend/a
+/backend/b
+/backend/whadapp-a/wish_id_db.bson
+/backend/whadapp-a/wish.conf
+/backend/whadapp-a/files
+/backend/whadapp-b/wish_id_db.bson
+/backend/whadapp-b/wish.conf
+/backend/whadapp-b/files

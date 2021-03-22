@@ -9,12 +9,15 @@ import { RpcApp } from '@wishcore/wish-sdk';
 import { WebSocketRpcWrapper } from './utils';
 
 interface ApplicationOpts {
+    /** Environment name */
+    name?: string;
     db?: string;
     port?: number;
     wish?: number;
 }
 
 export class Application {
+    opts: ApplicationOpts;
     wss: WebSocketServer;
     app: RpcApp;
     webRpc: WebRpc;
@@ -29,6 +32,8 @@ export class Application {
 
     static async create(opts: ApplicationOpts = {}) {
         const instance = new Application();
+
+        instance.opts = opts;
 
         instance.db = await Database.create(opts.db || 'whadapp');
         instance.webRpcServer = new Server();

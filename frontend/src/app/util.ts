@@ -23,8 +23,8 @@ export function htob(hex: string) {
  *
  * Undefined, null and empty string values will be stripped
  */
-export function stripEmptyKeys(object: object) {
-    const stripped = {};
+export function stripEmptyKeys<T = any>(object: object): T {
+    const stripped = {} as T;
 
     for (const key in object) {
         if (

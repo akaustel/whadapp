@@ -31,6 +31,8 @@ import { State } from 'src/reducers/app.actions';
 import { A11yModule } from '@angular/cdk/a11y';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { MatIconModule } from '@angular/material/icon';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
+import { DragFileDirective } from './drag-file.directive';
 
 const appRoutes: Routes = [
   { path: '', component: ChatComponent },
@@ -50,6 +52,8 @@ export interface RootState {
     DebugComponent,
     ChatComponent,
     CreateIdentityComponent,
+    ImageUploadComponent,
+    DragFileDirective,
   ],
   exports: [
   ],
