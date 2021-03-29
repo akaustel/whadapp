@@ -4,9 +4,10 @@ import { Client, Server } from '@wishcore/wish-rpc';
 
 export class Wish {
     app: RpcApp;
+    peerDb: Collection;
 
     constructor(db: any, wish: Server, web: Server, opts?: { port: number }) {
-        const docDb: Collection = db.jb.collection('documents');
+        this.peerDb = db.jb.collection('peer');
 
         this.app = new RpcApp({
             name: process.env.SID || "Wha'Dapp (v0.12.3) " + (opts.port || ''),
@@ -14,6 +15,7 @@ export class Wish {
             protocols: {
                 example: {
                     online: async (peer: Peer, client: Client) => {
+                        this.online(peer);
                         web.emit('signals', ['peer.online', peer]);
                     },
                     offline: (peer: Peer) => {
@@ -22,5 +24,10 @@ export class Wish {
                 }
             }
         });
+    }
+
+    private online(peer: Peer) {
+        const url = peer.toUrl();
+        this.peerDb.updateOne({ url }, { $set: { url, time: Date.now() } }, { upsert: true });
     }
 }

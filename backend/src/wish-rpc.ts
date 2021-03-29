@@ -6,6 +6,11 @@ import { createHash } from 'crypto';
 import { Message } from './interfaces';
 import { createReadStream, createWriteStream, renameSync, WriteStream } from 'fs';
 
+/**
+ * Interface for peers
+ *
+ * Implements endpoints which are accessible from remote peers
+ */
 export class WishRpc {
     rpc: Server;
     app: RpcApp;

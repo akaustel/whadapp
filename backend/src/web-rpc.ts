@@ -6,6 +6,11 @@ import { Directory } from './directory';
 import { Message } from './interfaces';
 import { createHash } from 'crypto';
 
+/**
+ * Interface from browser frontend
+ *
+ * Contains the rpc endpoints which can be called from the web ui
+ */
 export class WebRpc {
     rpc: Server;
     app: RpcApp;
