@@ -5,6 +5,18 @@ import { btoh } from './utils';
 import { createHash } from 'crypto';
 import { Message } from './interfaces';
 import { createReadStream, createWriteStream, renameSync, WriteStream } from 'fs';
+import { Collection } from 'mongodb';
+
+export interface ChatMessage {
+    /** Time when message was created */
+    time: number;
+    /** Message */
+    content: string;
+    /** Wish user id of sender */
+    from: string;
+    /** File hashes */
+    files: string[];
+}
 
 /**
  * Interface for peers
@@ -18,7 +30,7 @@ export class WishRpc {
     constructor(application: Application) {
         this.rpc = application.wishRpcServer;
         this.app = application.app;
-        const docDb = application.db.jb.collection('chat');
+        const chatDb: Collection<ChatMessage> = application.db.jb.collection('chat');
 
         this.app.server.insertMethods({
             _signals: {},
@@ -47,7 +59,7 @@ export class WishRpc {
                     return res.error({ msg: 'Signature not valid or unknown signer', code: 8 });
                 }
 
-                const dbMessage = {
+                const dbMessage: ChatMessage = {
                     content: msg.content,
                     files: msg.files,
                     from: btoh(context.peer.ruid),
@@ -102,13 +114,25 @@ export class WishRpc {
                     }
                 }
 
-                await docDb.insertOne(dbMessage);
+                await chatDb.insertOne(dbMessage);
 
                 console.log('dbMessage', dbMessage);
 
                 application.webRpcServer.emit('signals', ['message', msg, context]);
 
                 res.send();
+            },
+            _message: {},
+            message: {
+                _sync: {},
+                sync: async (req, res, context) => {
+                    const lastTimestamp: number = req.args[0];
+
+                    // read all messages from db that are newer or equal to this timestamp
+                    const messages = await chatDb.find({ time: { $gt: lastTimestamp } }).toArray();
+
+                    res.send(messages);
+                },
             },
             _get: {},
             get: async (req, res, context) => {
